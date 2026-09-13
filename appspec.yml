@@ -2,10 +2,10 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu
+    destination: /home/ubuntu/stunning-robot
 file_exists_behavior: OVERWRITE
 permissions:
-  - object: /home/ubuntu
+  - object: /home/ubuntu/stunning-robot
     owner: ubuntu
     group: ubuntu
     type:
