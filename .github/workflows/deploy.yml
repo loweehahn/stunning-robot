@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-east-1
+  S3_BUCKET: stunning-robot-codedeploy-838835354286-ap-east-1
+  CODEDEPLOY_APPLICATION: stunning-robot-app
+  CODEDEPLOY_DEPLOYMENT_GROUP: stunning-robot-dg
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::838835354286:role/stunning-robot-github-actions-deploy-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Package revision
+        run: |
+          zip -r "$GITHUB_SHA.zip" . -x ".git/*"
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp "$GITHUB_SHA.zip" "s3://${S3_BUCKET}/${GITHUB_SHA}.zip"
+
+      - name: Create CodeDeploy deployment
+        run: |
+          aws deploy create-deployment \
+            --application-name "$CODEDEPLOY_APPLICATION" \
+            --deployment-group-name "$CODEDEPLOY_DEPLOYMENT_GROUP" \
+            --s3-location bucket="$S3_BUCKET",key="${GITHUB_SHA}.zip",bundleType=zip \
+            --file-exists-behavior OVERWRITE
