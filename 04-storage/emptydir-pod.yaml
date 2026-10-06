@@ -1,0 +1,29 @@
+# API version for core objects such as Pods.
+apiVersion: v1
+# The type of object to create.
+kind: Pod
+# Identifying data for the Pod.
+metadata:
+  name: emptydir-test
+# The desired state of the Pod.
+spec:
+  # The containers that run inside the Pod.
+  containers:
+  - name: nginx
+    image: nginx:1.27
+    # CPU and memory reserved (requests) and capped (limits) for the container.
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "64Mi"
+      limits:
+        cpu: "100m"
+        memory: "64Mi"
+    # Where the Pod's volumes appear inside this container's filesystem.
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+  # Pod-level storage, created with the Pod and deleted with it (survives container restarts).
+  volumes:
+  - name: html
+    emptyDir: {}
