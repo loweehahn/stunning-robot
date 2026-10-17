@@ -1,0 +1,13 @@
+# API group and version for StorageClasses.
+apiVersion: storage.k8s.io/v1
+# The type of object to create.
+kind: StorageClass
+# Identifying data for the class (cluster-scoped, so no namespace).
+metadata:
+  name: local-path-retain
+# The component that creates PVs for claims using this class (K3s's local-path provisioner).
+provisioner: rancher.io/local-path
+# Keep the PV and its data when the PVC is deleted (the PV becomes Released).
+reclaimPolicy: Retain
+# Delay creating the PV until a Pod using the claim is scheduled, so the node is known.
+volumeBindingMode: WaitForFirstConsumer
