@@ -1,0 +1,20 @@
+# API version for core objects such as PersistentVolumeClaims.
+apiVersion: v1
+# The type of object to create.
+kind: PersistentVolumeClaim
+# Identifying data for the claim.
+metadata:
+  name: retain-pvc
+# The storage being requested, bound to an existing PV instead of provisioning a new one.
+spec:
+  # Can be mounted read-write by a single node at a time.
+  accessModes:
+  - ReadWriteOnce
+  # Must match the old PV's class, or the bind is refused.
+  storageClassName: local-path-retain
+  # The existing PV to bind to (the old, Released one that still holds the data).
+  volumeName: pvc-286d5789-dce5-4df4-9b93-ff182bef0036
+  # The minimum amount of storage required (must not exceed the PV's capacity).
+  resources:
+    requests:
+      storage: 100Mi
