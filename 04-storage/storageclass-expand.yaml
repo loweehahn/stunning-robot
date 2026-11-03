@@ -1,0 +1,21 @@
+# API group and version for StorageClasses.
+apiVersion: storage.k8s.io/v1
+
+# The type of object to create.
+kind: StorageClass
+
+# Identifying data for the class (cluster-scoped, so no namespace).
+metadata:
+  name: local-path-expand
+
+# The component that creates PVs for claims using this class (K3s's local-path provisioner).
+provisioner: rancher.io/local-path
+
+# Remove the PV and its data when the PVC is deleted, so cleanup stays simple.
+reclaimPolicy: Delete
+
+# Delay creating the PV until a Pod using the claim is scheduled, so the node is known.
+volumeBindingMode: WaitForFirstConsumer
+
+# Allow a PVC using this class to request a larger size by editing its storage request.
+allowVolumeExpansion: true
